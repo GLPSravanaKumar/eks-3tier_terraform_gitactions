@@ -41,7 +41,7 @@ jobs:
           ./scripts/build_push_images.sh
 
       - name: Terraform Init & Apply
-        working-directory: ./terraform
+        working-directory: .
         run: |
           terraform init
           terraform apply -auto-approve
