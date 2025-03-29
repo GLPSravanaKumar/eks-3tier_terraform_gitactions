@@ -11,8 +11,8 @@ jobs:
 
     env:
       AWS_REGION: ap-south-1
-      ECR_REPO_NAME: my-app
-      CLUSTER_NAME: my-cluster
+      ECR_REPO_NAME: glps-demo-ecr-repo
+      CLUSTER_NAME: glps-demo-eks-cluster
 
     steps:
       - name: Checkout Code
