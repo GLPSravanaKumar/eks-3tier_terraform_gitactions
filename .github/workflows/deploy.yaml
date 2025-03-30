@@ -44,6 +44,7 @@ jobs:
         working-directory: .
         run: |
           terraform init
+          terraform plan
           terraform apply -auto-approve
 
       - name: Update Kubeconfig
