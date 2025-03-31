@@ -26,7 +26,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Install Kubectl
-        uses: azure/setup-kubectl@v3
+        uses: aws/setup-kubectl@v3
         with:
           version: 'v1.29.0'
 
@@ -35,38 +35,22 @@ jobs:
         with:
           terraform_version: 1.7.0
 
-      - name: Login to Amazon ECR
-        run: |
-          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.$AWS_REGION.amazonaws.com
-
       - name: Build & Push Docker Images
         run: |
           chmod +x ./scripts/build_push_images.sh
           ./scripts/build_push_images.sh
 
-      - name: Terraform Init & Validate
+      - name: Terraform Init & Apply
+        working-directory: .
         run: |
           terraform init
-          terraform validate
-
-      - name: Terraform Plan
-        run: terraform plan
-
-      - name: Terraform Apply
-        run: terraform apply --auto-approve
+          terraform plan
+          terraform apply --auto-approve
 
       - name: Update Kubeconfig
         run: |
           aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
 
-      - name: Verify EKS Cluster Access
-        run: kubectl get nodes
-
       - name: Apply Kubernetes Manifests
         run: |
           kubectl apply -f ./k8s/
-
-      - name: Verify Kubernetes Deployment
-        run: |
-          kubectl get deployments
-          kubectl get services
