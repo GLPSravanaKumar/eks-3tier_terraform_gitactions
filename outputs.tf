@@ -14,3 +14,6 @@ output "db_subnet_ids" {
 output "eks_cluster_endpoint" {
     value = module.eks.eks_cluster_endpoint  
 }
+output "eks_cluster" {
+    value = module.eks.eks_cluster
+}
