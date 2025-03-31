@@ -43,7 +43,7 @@ jobs:
       - name: Terraform Init & Apply
         working-directory: .
         run: |
-          terraform init
+          terraform init -input=false
           terraform plan
           terraform apply --auto-approve
 
