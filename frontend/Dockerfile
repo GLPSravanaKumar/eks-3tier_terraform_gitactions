@@ -1,15 +1,14 @@
-# Frontend Dockerfile
-FROM node:16-alpine
+# Use the official Nginx image as the base
+FROM nginx:alpine
 
-WORKDIR /app
+# Copy the built React app to the Nginx HTML directory
+COPY .* /usr/share/nginx/html
 
-COPY package.json ./
-RUN npm install
+# Copy custom Nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-COPY . .
+# Expose port 80
+EXPOSE 80
 
-RUN npm run build
-
-EXPOSE 3000
-
-CMD ["npm", "start"]
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]

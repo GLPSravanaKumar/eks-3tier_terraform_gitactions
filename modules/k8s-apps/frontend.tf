@@ -27,7 +27,7 @@ resource "kubernetes_deployment" "frontend" {
           name  = "frontend"
           image = var.frontend_image
           port {
-            container_port = 3000
+            container_port = 80
           }
         }
       }
@@ -47,7 +47,7 @@ resource "kubernetes_service" "frontend" {
     }
     port {
       port        = 80
-      target_port = 3000
+      target_port = 80
     }
     type = "NodePort"
   }
