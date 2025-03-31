@@ -14,9 +14,9 @@ module "vpc" {
 module "eks" {
   source         = "./modules/eks"
   cluster_name = var.cluster_name
-  subnet_ids = [ var.pub_subnet_ids[0].id, var.pub_subnet_ids[1].id,
-                var.pvt_subnet_ids[0].id, var.pvt_subnet_ids[1].id,
-                var.db_subnet_ids.id ]
+  subnet_ids = [ var.pub_subnet_ids[0], var.pub_subnet_ids[1],
+                var.pvt_subnet_ids[0], var.pvt_subnet_ids[1],
+                var.db_subnet_ids[0] ]
 }
 
 module "k8s_apps" {
