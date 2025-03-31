@@ -1,4 +1,11 @@
-
+terraform {
+  backend "s3" {
+    bucket         = "glps-terraform-state-bucket"
+    key            = "terraform.tfstate"
+    region         = "ap-south-1"
+    encrypt        = true
+  }
+}
 
 module "vpc" {
   source = "./modules/vpc"

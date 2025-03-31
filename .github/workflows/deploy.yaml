@@ -44,8 +44,10 @@ jobs:
         working-directory: .
         run: |
           terraform init -input=false
-          terraform plan
-          terraform apply --auto-approve
+          terraform validate
+          terraform fmt -check
+          terraform plan -var="aws_region=${{ env.AWS_REGION }}"
+          terraform apply --auto-approve -var="aws_region=${{ env.AWS_REGION }}"
 
       - name: Update Kubeconfig
         run: |
