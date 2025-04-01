@@ -52,13 +52,16 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "igw"
+    Name = "glps_eks_igw"
   }
 }
 
 resource "aws_internet_gateway_attachment" "igw_attac" {
   vpc_id = aws_vpc.main.id
   internet_gateway_id = aws_internet_gateway.igw.id
+   lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_route_table" "rt_custom" {
@@ -67,6 +70,9 @@ resource "aws_route_table" "rt_custom" {
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
+  }
+  tags = {
+    Name = "glps_eks_rt_public"
   }
 }
 
@@ -83,6 +89,9 @@ resource "aws_route_table" "rt_main1" {
       cidr_block = "0.0.0.0/0"
       gateway_id = aws_nat_gateway.nat.id
     }
+    tags ={
+      Name = "glps_eks_rt_private"
+    }
 }
 
 resource "aws_route_table_association" "main1" {
@@ -94,10 +103,10 @@ resource "aws_route_table_association" "main1" {
 resource "aws_route_table" "rt_main2" {
   vpc_id = aws_vpc.main.id
 
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_nat_gateway.nat.id
+  tags ={
+    Name = "glps_eks_rt_db"
   }
+
 }
 
 resource "aws_route_table_association" "main2" {
@@ -108,9 +117,17 @@ resource "aws_route_table_association" "main2" {
 
 resource "aws_eip" "eip" {
   domain = "vpc"
+
+  tags = {
+    Name = "glps_eks_eip"
+  }
 }
 
 resource "aws_nat_gateway" "nat" {
   subnet_id = aws_subnet.public_subnets[0].id
   allocation_id = aws_eip.eip.id  
+
+  tags = {
+    Name = "glps_eks_nat"
+  }
 }
