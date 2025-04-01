@@ -46,9 +46,8 @@ jobs:
           terraform init -input=false
           terraform validate
           terraform plan 
-          terraform refresh
-          terraform apply --auto-approve
-
+          terraform destroy --auto-approve
+          
       - name: Update Kubeconfig
         run: |
           aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
