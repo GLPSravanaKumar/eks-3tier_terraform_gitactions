@@ -46,6 +46,7 @@ jobs:
           terraform init -input=false
           terraform validate
           terraform plan 
+          terraform refresh
           terraform apply --auto-approve
 
       - name: Update Kubeconfig
