@@ -49,7 +49,6 @@ resource "aws_subnet" "db_subnets"{
 }
 
 resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.main.id
 
   tags = {
     Name = "glps_eks_igw"
