@@ -45,8 +45,9 @@ jobs:
         run: |
           terraform init -input=false
           terraform validate
+          terraform fmt -check
           terraform plan 
-          terraform destroy --auto-approve
+          terraform apply --auto-approve
           
       - name: Update Kubeconfig
         run: |
