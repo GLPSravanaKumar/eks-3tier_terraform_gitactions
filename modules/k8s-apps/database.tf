@@ -1,7 +1,7 @@
 resource "kubernetes_deployment" "database" {
   metadata {
     name      = "database-deployment"
-    namespace = "default"
+    namespace = kubernetes_namespace.ns.metadata[0].name
     labels = {
       app = "database"
     }
@@ -40,6 +40,7 @@ resource "kubernetes_deployment" "database" {
           port {
             container_port = 3306
           }
+          
         }
       }
     }
@@ -49,7 +50,7 @@ resource "kubernetes_deployment" "database" {
 resource "kubernetes_service" "database" {
   metadata {
     name      = "database-service"
-    namespace = "default"
+    namespace = kubernetes_namespace.ns.metadata[0].name
   }
 
   spec {
@@ -62,4 +63,5 @@ resource "kubernetes_service" "database" {
     }
     type = "ClusterIP"
   }
+  depends_on = [kubernetes_deployment.database]
 }

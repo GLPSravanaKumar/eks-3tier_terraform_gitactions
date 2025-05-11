@@ -1,9 +1,12 @@
 name: EKS 3-Tier Deployment
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Choose action to perform apply or destroy'
+        required: true
+        default: "apply"
 
 jobs:
   deploy:
@@ -11,8 +14,10 @@ jobs:
 
     env:
       AWS_REGION: ap-south-1
-      ECR_REPO_NAME: glps-demo-ecr-repo
-      CLUSTER_NAME: glps-demo-eks-cluster
+      ECR_FRONT_REPO: my-frontend
+      ECR_BACK_REPO: my-backend
+      ECR_DATABASE_REPO: my-database
+      CLUSTER_NAME: glps-eks-cluster
 
     steps:
       - name: Checkout Code
@@ -40,18 +45,37 @@ jobs:
           chmod +x ./scripts/build_push_images.sh
           ./scripts/build_push_images.sh
 
-      - name: Terraform Init & Apply
+      - name: Terraform Initialize
         working-directory: .
         run: |
-          terraform init -input=false
+          terraform init \
+            -backend-config="bucket=glps-terraform-state-bucket" \
+            -backend-config="region=ap-south-1" \
+            -backend-config="key=eks/terraform.tfstate"
+          
+      - name : Terraform Validate
+        working-directory: .
+        run: |
           terraform validate
-          terraform plan 
-          terraform apply --auto-approve
+          terraform fmt -check
+          
+      - name: Terraform Plan
+        working-directory: .
+        run: |
+           terraform plan -out=tfplan
+           terraform show -no-color tfplan
+       
+      - name : Terraform Apply
+        working-directory: .
+        run: |
+           if [ "${{ github.event.inputs.action }}" == "destroy" ]; then
+              terraform destroy -auto-approve
+            else
+              terraform apply -auto-approve
+            fi
           
       - name: Update Kubeconfig
         run: |
           aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
 
-      - name: Apply Kubernetes Manifests
-        run: |
-          kubectl apply -f ./k8s/
+      

@@ -12,7 +12,15 @@ terraform {
 }
 
 provider "aws" {
-  region = "ap-south-1"
+  region = var.region
+
+  default_tags {
+    tags = {
+      Environment = "Production"
+      Project     = "WebAppOnEKS"
+      Owner       = "glps"
+  }
+}
 }
 
 provider "kubernetes" {

@@ -1,7 +1,7 @@
 resource "kubernetes_deployment" "backend" {
   metadata {
     name      = "backend-deployment"
-    namespace = "default"
+    namespace = kubernetes_namespace.ns.metadata[0].name
     labels = {
       app = "backend"
     }
@@ -26,8 +26,19 @@ resource "kubernetes_deployment" "backend" {
         container {
           name  = "backend"
           image = var.backend_image
+          image_pull_policy = "Always"
           port {
             container_port = 5000
+          }
+          resources {
+            limits = {
+              cpu    = "500m"
+              memory = "512Mi"
+            }
+            requests = {
+              cpu    = "250m"
+              memory = "256Mi"
+            }
           }
         }
       }
@@ -38,7 +49,7 @@ resource "kubernetes_deployment" "backend" {
 resource "kubernetes_service" "backend" {
   metadata {
     name      = "backend-service"
-    namespace = "default"
+    namespace = kubernetes_namespace.ns.metadata[0].name
   }
 
   spec {
@@ -51,4 +62,5 @@ resource "kubernetes_service" "backend" {
     }
     type = "ClusterIP"
   }
+  depends_on = [ kubernetes_deployment.backend ]
 }

@@ -1,7 +1,17 @@
+resource "kubernetes_namespace" "ns" {
+  metadata {
+    name = "glps"
+  }
+  depends_on = [
+    aws_eks_cluster.eks,
+    aws_eks_node_group.node_group
+    ]
+}
+
 resource "kubernetes_deployment" "frontend" {
   metadata {
     name      = "frontend-deployment"
-    namespace = "default"
+    namespace = kubernetes_namespace.ns.metadata[0].name
     labels = {
       app = "frontend"
     }
@@ -26,8 +36,19 @@ resource "kubernetes_deployment" "frontend" {
         container {
           name  = "frontend"
           image = var.frontend_image
+          image_pull_policy = "Always"
           port {
             container_port = 80
+          }
+          resources {
+            limits = {
+              cpu    = "500m"
+              memory = "512Mi"
+            }
+            requests = {
+              cpu    = "250m"
+              memory = "256Mi"
+            }
           }
         }
       }
@@ -38,7 +59,7 @@ resource "kubernetes_deployment" "frontend" {
 resource "kubernetes_service" "frontend" {
   metadata {
     name      = "frontend-service"
-    namespace = "default"
+    namespace = kubernetes_namespace.ns.metadata[0].name
   }
 
   spec {
@@ -51,4 +72,5 @@ resource "kubernetes_service" "frontend" {
     }
     type = "NodePort"
   }
+  depends_on = [ kubernetes_deployment.frontend ]
 }
