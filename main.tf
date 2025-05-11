@@ -30,4 +30,6 @@ module "k8s_apps" {
   frontend_image = var.frontend_image
   backend_image  = var.backend_image
   database_image = var.database_image
+  oidc_url = module.eks.oidc_url
+  depends_on = [ module.eks.aws_eks_cluster.eks ]
 }

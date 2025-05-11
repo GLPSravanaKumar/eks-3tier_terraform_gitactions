@@ -1,11 +1,14 @@
+data "tls_certificate" "oidc_thumbprint" {
+  url = var.oidc_url
+}
+
 resource "aws_iam_openid_connect_provider" "oidc" {
-  url = aws_eks_cluster.eks.identity[0].oidc[0].issuer
+  url = var.oidc_url
 
   client_id_list = ["sts.amazonaws.com"]
 
   thumbprint_list = [data.tls_certificate.oidc_thumbprint.certificates[0].sha1_fingerprint]
 
-  depends_on = [ aws_eks_cluster.eks] 
 }
 
 resource "aws_iam_policy" "alb_controller_policy" {

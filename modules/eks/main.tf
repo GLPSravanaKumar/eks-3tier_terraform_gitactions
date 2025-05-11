@@ -49,8 +49,8 @@ resource "aws_eks_cluster" "eks" {
   # properly delete EKS managed EC2 infrastructure such as Security Groups.
   depends_on = [
     aws_iam_role_policy_attachment.EKSClusterPolicy,
-    module.vpc.aws_subnet.public_subnets,
-    module.vpc.aws_subnet.private_subnets
+    aws_subnet.public_subnets,
+    aws_subnet.private_subnets
   ]
   tags = {
     Name = "${var.cluster_name}/eks-cluster"

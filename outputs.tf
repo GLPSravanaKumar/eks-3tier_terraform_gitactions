@@ -17,3 +17,7 @@ output "eks_cluster_endpoint" {
 output "eks_cluster" {
     value = module.eks.eks_cluster
 }
+output "oidc_url" {
+  value = module.eks.oidc_url
+}
+

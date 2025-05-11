@@ -10,3 +10,6 @@ output "eks_cluster" {
 output "cluster_certificate_authority_data" {
   value = aws_eks_cluster.eks.certificate_authority[0].data
 }
+output "oidc_url" {
+  value = aws_eks_cluster.eks.identity[0].oidc[0].issuer
+}
