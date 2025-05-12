@@ -31,4 +31,5 @@ module "k8s_apps" {
   backend_image  = var.backend_image
   database_image = var.database_image
   oidc_url = module.eks.oidc_url
+  depends_on = [ module.vpc ]
 }
