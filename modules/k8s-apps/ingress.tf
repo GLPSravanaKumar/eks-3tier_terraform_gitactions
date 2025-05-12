@@ -93,6 +93,7 @@ resource "kubernetes_ingress_v1" "app_ingress" {
   }
 
   spec {
+    ingress_class_name = "alb"
     rule {
       http {
         path {
