@@ -2,10 +2,7 @@ resource "kubernetes_namespace" "ns" {
   metadata {
     name = "glps"
   }
-  depends_on = [
-    aws_eks_cluster.eks,
-    aws_eks_node_group.node_group
-    ]
+  
 }
 
 resource "kubernetes_deployment" "frontend" {
