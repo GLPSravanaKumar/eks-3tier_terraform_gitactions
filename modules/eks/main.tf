@@ -40,8 +40,8 @@ resource "aws_eks_cluster" "eks" {
 
   vpc_config {
     subnet_ids = concat (
-      var.pub_subnet_ids[*].id,
-      var.pvt_subnet_ids[*].id
+      var.pub_subnet_ids[*],
+      var.pvt_subnet_ids[*]
     )
   }
   # Ensure that IAM Role permissions are created before and deleted
@@ -94,7 +94,7 @@ resource "aws_eks_node_group" "nodegroup" {
   cluster_name    = var.cluster_name
   node_group_name = "${var.cluster_name}-node-group"
   node_role_arn   = aws_iam_role.eks_node_group_role.arn
-  subnet_ids      = var.pvt_subnet_ids[*].id
+  subnet_ids      = var.pvt_subnet_ids[*]
   scaling_config {
     desired_size = 2
     max_size     = 4
