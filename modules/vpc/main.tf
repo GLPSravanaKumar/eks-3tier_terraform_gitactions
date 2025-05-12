@@ -97,7 +97,7 @@ resource "aws_route_table" "pub_rt" {
 resource "aws_route_table_association" "pub_rt" {
     count = 2
     subnet_id = aws_subnet.public_subnets[count.index].id
-    route_table_id = aws_route_table.custom.id
+    route_table_id = aws_route_table.pub_rt.id
 }
 
 resource "aws_route_table" "pvt_rt" {
@@ -115,7 +115,7 @@ resource "aws_route_table" "pvt_rt" {
 resource "aws_route_table_association" "pvt_rt" {
   count = 2
   subnet_id = aws_subnet.private_subnets[count.index].id
-  route_table_id = aws_route_table.main.id
+  route_table_id = aws_route_table.pvt_rt.id
 }
 
 resource "aws_route_table" "db_rt" {
